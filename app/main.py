@@ -3,11 +3,13 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from redis import asyncio as aioredis
 
+from app.routers.users import router_users
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     app.state.redis = await aioredis.from_url(
-        "redis://localhost", decode_responses=True
+        'redis://localhost', decode_responses=True
     )
 
     yield
@@ -16,3 +18,5 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+
+app.include_router(router_users)
