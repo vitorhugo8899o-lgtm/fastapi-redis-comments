@@ -1,0 +1,56 @@
+[project]
+name = "redis-projeto"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Vítor",email = "vitorhugo8899o@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13,<4.0"
+dependencies = [
+    "fastapi (>=0.135.1,<0.136.0)",
+    "redis (>=7.3.0,<8.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "ruff (>=0.15.7,<0.16.0)",
+    "taskipy (>=1.14.1,<2.0.0)",
+    "pytest (>=9.0.2,<10.0.0)",
+    "pytest-cov (>=7.0.0,<8.0.0)"
+]
+
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint]
+preview = true
+select = ['I', 'F', 'E', 'W', 'PL', 'PT', 'FAST']
+
+[tool.ruff.format]
+preview = true
+quote-style = 'single'
+
+[tool.pytest.ini_options]
+pythonpath = "."
+addopts = '-p no:warnings'
+asyncio_default_fixture_loop_scope = 'function'
+
+[tool.coverage.run]
+concurrency = ["thread", "greenlet"]
+
+
+[tool.taskipy.tasks]
+lint = 'ruff check'
+pre_format = 'ruff check --fix'
+format = 'ruff format'
+run = 'fastapi dev app/main.py'
+pre_test = 'task lint'
+test = 'pytest -s -x --cov=app -vv'
+post_test = 'coverage html'
