@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends
 from redis import asyncio as aioredis
 
 from app.redis_depends import get_redis
-from app.schemas.users import UserCreate, UserLogin, ResponseLogin
-from app.services.services_users import change_infos, create_user, login_user
+from app.schemas.users import ResponseLogin, UserCreate, UserLogin, MessageConfirme
+from app.services.services_users import change_infos, create_user, login_user, delete_user
 
 router_users = APIRouter(prefix='/users', tags=['Users'])
 r = Annotated[aioredis.Redis, Depends(get_redis)]
@@ -28,3 +28,7 @@ async def infos_change(
     login: Login) -> str:
 
     return await change_infos(new_info, r, login)
+
+@router_users.delete('/me',status_code=200)
+async def delete_ac(login: Login,confirm:MessageConfirme, r:r):
+    return await delete_user(login,confirm,r)
