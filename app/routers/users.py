@@ -42,7 +42,7 @@ async def create_user(user: UserCreate, r: r) -> dict:
     return user_dict
 
 
-@router_users.post('/login', status_code=201)
+@router_users.post('/login', status_code=200)
 async def login_user(user: UserLogin, r: r) -> str:
 
     exists = await r.get(f'user:email:{user.email}')
