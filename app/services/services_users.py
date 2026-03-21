@@ -1,15 +1,16 @@
-from fastapi import Depends, HTTPException
-from app.redis_depends import get_redis
-from app.schemas.users import UserCreate, UserLogin
-from redis import asyncio as aioredis
 from http import HTTPStatus
 from typing import Annotated
 
+from fastapi import Depends, HTTPException
+from redis import asyncio as aioredis
+
+from app.redis_depends import get_redis
+from app.schemas.users import UserCreate, UserLogin, ResponseLogin
 
 r = Annotated[aioredis.Redis, Depends(get_redis)]
 
 
-async def create_user(user:UserCreate,r:r):
+async def create_user(user: UserCreate, r: r) -> dict:
     email_key = f'user:email:{user.email}'
 
     exist_email = await r.get(email_key)
@@ -38,8 +39,7 @@ async def create_user(user:UserCreate,r:r):
     return user_dict
 
 
-
-async def login_user(r:r,user: UserLogin):
+async def login_user(r: r, user: UserLogin) -> ResponseLogin:
     exists = await r.get(f'user:email:{user.email}')
 
     async with r.pipeline(transaction=True) as pipe:
@@ -68,9 +68,29 @@ async def login_user(r:r,user: UserLogin):
                 status_code=HTTPStatus.FORBIDDEN,
                 detail='senha incorreta'
             )
-    return 'Usuario Logado!'
+    return ResponseLogin(
+        email=user.email,
+        message='Usuário Logado!'
+    )
+
 
 Login = Annotated[UserLogin, Depends(login_user)]
 
 
+async def change_infos(new_info: UserCreate, r: r, login: Login) -> str:
+    exists = await r.get(f'user:email:{login.email}')
 
+    user_key = f'user:{exists}'
+
+    user_dict= new_info.model_dump()
+    user_dict['id'] = user_key
+
+    async with r.pipeline(transaction=True) as pipe:
+
+        await pipe.hset(f'user:{exists}', mapping=user_dict)
+
+        await pipe.rename(f'user:email:{login.email}',f'user:email:{new_info.email}')
+
+        await pipe.execute()
+
+    return f'Informações Atualizadas com Sucesso!, Bem vindo {new_info.name}'
