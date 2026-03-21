@@ -44,3 +44,5 @@ cover/
 # ruff
 .ruff_cache/
 
+#arquivo para arrumar os commits
+arquivo _arrumar.py
