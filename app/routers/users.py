@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from redis import asyncio as aioredis
 
 from app.redis_depends import get_redis
-from app.schemas.users import UserCreate
+from app.schemas.users import UserCreate, UserLogin
 
 router_users = APIRouter(prefix='/users', tags=['Users'])
 r = Annotated[aioredis.Redis, Depends(get_redis)]
@@ -40,3 +40,40 @@ async def create_user(user: UserCreate, r: r) -> dict:
         await pipe.execute()
 
     return user_dict
+
+
+@router_users.post('/login', status_code=201)
+async def login_user(user: UserLogin, r: r) -> str:
+
+    exists = await r.get(f'user:email:{user.email}')
+
+    async with r.pipeline(transaction=True) as pipe:
+        #esperar ele executar para depois verificar os campos
+        
+        await pipe.hget(f'user:{exists}', 'email')
+
+        await pipe.hget(f'user:{exists}', 'password')
+
+        result = await pipe.execute()
+
+
+    if not exists:
+            raise HTTPException(
+                status_code=HTTPStatus.NOT_FOUND,
+                detail='Email não está cadastrado.'
+            )
+
+    if result[0] != user.email:
+            raise HTTPException(
+                status_code=HTTPStatus.FORBIDDEN,
+                detail='Email  incorreto'
+            )
+
+    elif result[1] != user.password:
+            raise HTTPException(
+                status_code=HTTPStatus.FORBIDDEN,
+                detail='senha incorreta'
+            )
+    return 'Usuario Logado!'
+
+
