@@ -5,7 +5,7 @@ from fastapi import Depends, HTTPException
 from redis import asyncio as aioredis
 
 from app.redis_depends import get_redis
-from app.schemas.users import UserCreate, UserLogin, ResponseLogin
+from app.schemas.users import UserCreate, UserLogin, ResponseLogin, MessageConfirme
 
 r = Annotated[aioredis.Redis, Depends(get_redis)]
 
@@ -69,6 +69,7 @@ async def login_user(r: r, user: UserLogin) -> ResponseLogin:
                 detail='senha incorreta'
             )
     return ResponseLogin(
+        id_user=exists,
         email=user.email,
         message='Usuário Logado!'
     )
@@ -78,19 +79,22 @@ Login = Annotated[UserLogin, Depends(login_user)]
 
 
 async def change_infos(new_info: UserCreate, r: r, login: Login) -> str:
-    exists = await r.get(f'user:email:{login.email}')
 
-    user_key = f'user:{exists}'
+    user_key = f'user:{login.id_user}'
 
     user_dict= new_info.model_dump()
     user_dict['id'] = user_key
 
     async with r.pipeline(transaction=True) as pipe:
 
-        await pipe.hset(f'user:{exists}', mapping=user_dict)
+        await pipe.hset(f'user:{login.id_user}', mapping=user_dict)
 
         await pipe.rename(f'user:email:{login.email}',f'user:email:{new_info.email}')
 
         await pipe.execute()
 
     return f'Informações Atualizadas com Sucesso!, Bem vindo {new_info.name}'
+
+async def delete_user(login: Login, confirm: MessageConfirme, r:r) -> str:
+    pass
+
