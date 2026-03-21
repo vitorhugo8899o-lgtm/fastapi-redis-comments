@@ -36,7 +36,7 @@ async def create_user(user: UserCreate, r: r) -> dict:
 
         await pipe.set(email_key, id_user)
 
-        await pipe.sadd('users:all', id_user)
+        await pipe.lpush('users:list',f'user:{id_user}:user:{user.email}')
 
         await pipe.execute()
 
@@ -119,3 +119,7 @@ async def delete_user(login: Login, confirm: MessageConfirme, r: r) -> str:
 
     return 'Conta deletada!'
 
+async def get_users(r:r,init:int,end:int):
+    result = await r.lrange('users:list',init,end)
+
+    return result

@@ -1,11 +1,11 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from redis import asyncio as aioredis
 
 from app.redis_depends import get_redis
-from app.schemas.users import ResponseLogin, UserCreate, UserLogin, MessageConfirme
-from app.services.services_users import change_infos, create_user, login_user, delete_user
+from app.schemas.users import ResponseLogin, UserCreate, UserLogin, MessageConfirme, FilterUsers
+from app.services.services_users import change_infos, create_user, login_user, delete_user, get_users
 
 router_users = APIRouter(prefix='/users', tags=['Users'])
 r = Annotated[aioredis.Redis, Depends(get_redis)]
@@ -32,3 +32,7 @@ async def infos_change(
 @router_users.delete('/me',status_code=200)
 async def delete_ac(login: Login,confirm:MessageConfirme, r:r):
     return await delete_user(login,confirm,r)
+
+@router_users.get('',status_code=200)
+async def users_params(r:r,filter_user:Annotated[FilterUsers, Query()]) -> list | None:
+    return await get_users(r,filter_user.init,filter_user.end)
