@@ -32,3 +32,5 @@ async def list_comments(r: r, filter_comment: Annotated[Filter, Query()]) -> lis
 @router_coments.post('/{id_comment}')
 async def like_post(user: Login, id_comment: int, r:r) -> str:
     return await like_the_comment(user,id_comment, r)
+
+
