@@ -5,8 +5,12 @@ from redis import asyncio as aioredis
 
 from app.redis_depends import get_redis
 from app.schemas.comment import CommentUser
-from app.schemas.users import UserLogin, Filter
-from app.services.services_comment import create_comment, get_comments
+from app.schemas.users import Filter, UserLogin
+from app.services.services_comment import (
+    create_comment,
+    get_comments,
+    like_the_comment,
+)
 from app.services.services_users import login_user
 
 router_coments = APIRouter(prefix='/comments', tags=['Comments'])
@@ -19,6 +23,12 @@ Login = Annotated[UserLogin, Depends(login_user)]
 async def comment(user: Login, comment: CommentUser, r: r) -> dict:
     return await create_comment(user, comment, r)
 
-@router_coments.get('',status_code=200)
-async def list_comments(r:r,filter_comment: Annotated[Filter, Query()]):
-    return await get_comments(r,filter_comment.init,filter_comment.end)
+
+@router_coments.get('', status_code=200)
+async def list_comments(r: r, filter_comment: Annotated[Filter, Query()]) -> list:
+    return await get_comments(r, filter_comment.init, filter_comment.end)
+
+
+@router_coments.post('/{id_comment}')
+async def like_post(user: Login, id_comment: int, r:r) -> str:
+    return await like_the_comment(user,id_comment, r)
