@@ -1,10 +1,8 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, PrivateAttr
 
 
 class CommentUser(BaseModel):
-    id_user: int
-    email_user: EmailStr
+    _id_comment: int = PrivateAttr()
+    _id_user: int = PrivateAttr()
+    _email_user: EmailStr = PrivateAttr()
     comment: str
-    likes: int | None = None
-
-
