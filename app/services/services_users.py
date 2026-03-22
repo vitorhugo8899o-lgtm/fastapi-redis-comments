@@ -64,7 +64,7 @@ async def login_user(r: r, user: UserLogin) -> ResponseLogin:
 
     elif result[0] != user.email:
         raise HTTPException(
-            status_code=HTTPStatus.UNAUTHORIZED , detail='Email ou senha invalidos'
+            status_code=HTTPStatus.UNAUTHORIZED, detail='Email ou senha invalidos'
         )
 
     elif result[1] != user.password:
@@ -121,7 +121,6 @@ async def get_users(r: r, init: int, end: int):
 
     result = await r.lrange('users:list', init, end)
 
-
     for entry in result:
         if isinstance(entry, bytes):
             entry = entry.decode('utf-8')
@@ -129,10 +128,10 @@ async def get_users(r: r, init: int, end: int):
         parts = entry.split(':')
 
         users = {
-            'id_user':parts[1],
-            'email':parts[3]
+            'id_user': parts[1],
+            'email': parts[3]
             }
-    
+
         formatted_comments.append(users)
 
     return formatted_comments

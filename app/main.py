@@ -3,8 +3,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from redis import asyncio as aioredis
 
-from app.routers.users import router_users
 from app.routers.comments import router_coments
+from app.routers.users import router_users
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

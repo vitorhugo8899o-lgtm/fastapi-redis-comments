@@ -41,7 +41,7 @@ async def infos_change(new_info: UserCreate, r: r, login: Login) -> str:
 
 
 @router_users.delete('/me', status_code=200)
-async def delete_ac(login: Login, confirm: MessageConfirme, r: r):
+async def delete_ac(login: Login, confirm: MessageConfirme, r: r) -> str:
     return await delete_user(login, confirm, r)
 
 
