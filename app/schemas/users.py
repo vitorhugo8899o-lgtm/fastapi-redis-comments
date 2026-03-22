@@ -21,6 +21,7 @@ class ResponseLogin(BaseModel):
 class MessageConfirme(BaseModel):
     message: str = 'Confirmo deletar minha conta'
 
-class FilterUsers(BaseModel):
+
+class Filter(BaseModel):
     init: int = Field(ge=0, default=0)
     end: int = Field(ge=-1, default=-1)

@@ -6,7 +6,7 @@ async def test_create_user_success(client):
     payload = {
         'name': 'test_user',
         'email': 'test@example.com',
-        'password': 'senhasupersecreta'
+        'password': 'senhasupersecreta',
     }
 
     response = await client.post('/users', json=payload)
@@ -26,7 +26,7 @@ async def test_email_already_in_use(client):
     payload = {
         'name': 'test_user',
         'email': 'test@example.com',
-        'password': 'senhasupersecreta'
+        'password': 'senhasupersecreta',
     }
 
     user1 = await client.post('/users', json=payload)

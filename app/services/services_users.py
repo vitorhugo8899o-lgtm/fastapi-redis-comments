@@ -3,6 +3,7 @@ from typing import Annotated
 
 from fastapi import Depends, HTTPException
 from redis import asyncio as aioredis
+
 from app.redis_depends import get_redis
 from app.schemas.users import (
     MessageConfirme,
@@ -11,8 +12,8 @@ from app.schemas.users import (
     UserLogin,
 )
 
-
 r = Annotated[aioredis.Redis, Depends(get_redis)]
+
 
 async def create_user(user: UserCreate, r: r) -> dict:
     email_key = f'user:email:{user.email}'
@@ -36,7 +37,7 @@ async def create_user(user: UserCreate, r: r) -> dict:
 
         await pipe.set(email_key, id_user)
 
-        await pipe.lpush('users:list',f'user:{id_user}:user:{user.email}')
+        await pipe.rpush('users:list', f'user:{id_user}:user:{user.email}')
 
         await pipe.execute()
 
@@ -58,24 +59,20 @@ async def login_user(r: r, user: UserLogin) -> ResponseLogin:
     if not exists:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='Email não está cadastrado.'
+            detail='Email não está cadastrado.',
         )
 
     elif result[0] != user.email:
         raise HTTPException(
-            status_code=HTTPStatus.FORBIDDEN,
-            detail='Email  incorreto'
+            status_code=HTTPStatus.UNAUTHORIZED , detail='Email ou senha invalidos'
         )
 
     elif result[1] != user.password:
         raise HTTPException(
-            status_code=HTTPStatus.FORBIDDEN,
-            detail='senha incorreta'
+            status_code=HTTPStatus.UNAUTHORIZED, detail='Email ou senha invalidos'
         )
     return ResponseLogin(
-        id_user=exists,
-        email=user.email,
-        message='Usuário Logado!'
+        id_user=exists, email=user.email, message='Usuário Logado!'
     )
 
 
@@ -90,7 +87,6 @@ async def change_infos(new_info: UserCreate, r: r, login: Login) -> str:
     user_dict['id'] = user_key
 
     async with r.pipeline(transaction=True) as pipe:
-
         await pipe.hset(f'user:{login.id_user}', mapping=user_dict)
 
         await pipe.rename(
@@ -119,7 +115,24 @@ async def delete_user(login: Login, confirm: MessageConfirme, r: r) -> str:
 
     return 'Conta deletada!'
 
-async def get_users(r:r,init:int,end:int):
-    result = await r.lrange('users:list',init,end)
 
-    return result
+async def get_users(r: r, init: int, end: int):
+    formatted_comments = []
+
+    result = await r.lrange('users:list', init, end)
+
+
+    for entry in result:
+        if isinstance(entry, bytes):
+            entry = entry.decode('utf-8')
+
+        parts = entry.split(':')
+
+        users = {
+            'id_user':parts[1],
+            'email':parts[3]
+            }
+    
+        formatted_comments.append(users)
+
+    return formatted_comments
