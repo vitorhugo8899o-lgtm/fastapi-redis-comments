@@ -94,9 +94,49 @@ async def like_the_comment(user:Login,id_comment: int, r: r) -> str:
     return f'Comentário curtido: likes no comentário {result[2]}'
 
 async def get_all_liked(r:r,id_comment:int):
-    result = await r.smembers(f'comment:{id_comment}:likes_users')
+
+    likes = await r.smembers(f'comment:{id_comment}:likes_users')
+
+    result = await r.scard(f'comment:{id_comment}:likes_users')
 
     if not result:
-        return 'Nenhuma curtida nesse comentário'
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail='Comentário não encontrado ou deletado.'
+        )
 
-    return result
+    if result == 0:
+        return 'Esse comentário não possui curtidas'
+
+    return f'Total de curtidas: {result}. Pessoas que curtiram: {likes}'
+
+async def delete_comment_user(user:Login,r:r,id_comment:int):
+
+    comment_email = await r.hget(f'comment:{id_comment}','_email_user')
+
+    if comment_email != user.email:
+        raise HTTPException(
+            status_code=HTTPStatus.FORBIDDEN,
+            detail='O email não conhecide com o do comentário'
+        )
+
+    async with r.pipeline(transaction=True) as pipe:
+        await r.delete(f'comment:{id_comment}')
+        await pipe.delete(f'comment:{id_comment}:likes_users')
+
+        result = await pipe.execute()
+    
+    if not result[0]:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail='Comentário não encontrado'
+        )
+
+    if not result[0]:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail='Comentário não encontrado'
+        )
+
+    
+    return 'Comentário deletado.'
