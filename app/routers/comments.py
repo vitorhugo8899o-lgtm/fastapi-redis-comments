@@ -10,6 +10,7 @@ from app.services.services_comment import (
     create_comment,
     get_comments,
     like_the_comment,
+    get_all_liked
 )
 from app.services.services_users import login_user
 
@@ -34,3 +35,6 @@ async def like_post(user: Login, id_comment: int, r:r) -> str:
     return await like_the_comment(user,id_comment, r)
 
 
+@router_coments.post('/{id_comment}/liked_list')
+async def list_liked(r:r,id_comment:int):
+    return await get_all_liked(r,id_comment)

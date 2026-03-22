@@ -93,4 +93,10 @@ async def like_the_comment(user:Login,id_comment: int, r: r) -> str:
 
     return f'Comentário curtido: likes no comentário {result[2]}'
 
+async def get_all_liked(r:r,id_comment:int):
+    result = await r.smembers(f'comment:{id_comment}:likes_users')
 
+    if not result:
+        return 'Nenhuma curtida nesse comentário'
+
+    return result
