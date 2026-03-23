@@ -36,3 +36,16 @@ async def clean_redis(startup_and_shutdown):
 
     if hasattr(app.state, 'redis'):
         await app.state.redis.flushdb()
+
+
+@pytest.fixture
+async def user(client):
+    payload = {
+        'name': 'test_user',
+        'email': 'test@example.com',
+        'password': 'senhasupersecreta',
+    }
+
+    await client.post('/users', json=payload)
+
+    return payload

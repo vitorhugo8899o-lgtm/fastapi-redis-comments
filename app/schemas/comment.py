@@ -6,4 +6,3 @@ class CommentUser(BaseModel):
     _id_user: int = PrivateAttr()
     _email_user: EmailStr = PrivateAttr()
     comment: str
-

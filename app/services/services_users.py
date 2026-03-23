@@ -47,14 +47,7 @@ async def create_user(user: UserCreate, r: r) -> dict:
 async def login_user(r: r, user: UserLogin) -> ResponseLogin:
     exists = await r.get(f'user:email:{user.email}')
 
-    async with r.pipeline(transaction=True) as pipe:
-        # esperar ele executar para depois verificar os campos
-
-        await pipe.hget(f'user:{exists}', 'email')
-
-        await pipe.hget(f'user:{exists}', 'password')
-
-        result = await pipe.execute()
+    password = await r.hget(f'user:{exists}', 'password')
 
     if not exists:
         raise HTTPException(
@@ -62,15 +55,12 @@ async def login_user(r: r, user: UserLogin) -> ResponseLogin:
             detail='Email não está cadastrado.',
         )
 
-    elif result[0] != user.email:
+    elif password != user.password:
         raise HTTPException(
-            status_code=HTTPStatus.UNAUTHORIZED, detail='Email ou senha invalidos'
+            status_code=HTTPStatus.UNAUTHORIZED,
+            detail='Email ou senha invalidos',
         )
 
-    elif result[1] != user.password:
-        raise HTTPException(
-            status_code=HTTPStatus.UNAUTHORIZED, detail='Email ou senha invalidos'
-        )
     return ResponseLogin(
         id_user=exists, email=user.email, message='Usuário Logado!'
     )
@@ -108,30 +98,27 @@ async def delete_user(login: Login, confirm: MessageConfirme, r: r) -> str:
 
         result = await pipe.execute()
 
-    if result[0] is None:
+    if result[0] is None:  # pragma: no cover
         raise 'Erro ao deletar conjunto'
-    elif result[1] is None:
+    elif result[1] is None:  # pragma: no cover
         raise 'Erro ao deletar chave'
 
     return 'Conta deletada!'
 
 
 async def get_users(r: r, init: int, end: int):
-    formatted_comments = []
+    formatted_users = []
 
     result = await r.lrange('users:list', init, end)
 
     for entry in result:
         if isinstance(entry, bytes):
-            entry = entry.decode('utf-8')
+            entry = entry.decode('utf-8') #noqa PLW2901
 
         parts = entry.split(':')
 
-        users = {
-            'id_user': parts[1],
-            'email': parts[3]
-            }
+        users = {'id_user': parts[1], 'email': parts[3]}
 
-        formatted_comments.append(users)
+        formatted_users.append(users)
 
-    return formatted_comments
+    return formatted_users
