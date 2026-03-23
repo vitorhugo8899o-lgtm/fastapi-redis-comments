@@ -113,7 +113,7 @@ async def get_users(r: r, init: int, end: int):
 
     for entry in result:
         if isinstance(entry, bytes):
-            entry = entry.decode('utf-8') #noqa PLW2901
+            entry = entry.decode('utf-8')  # noqa PLW2901
 
         parts = entry.split(':')
 
