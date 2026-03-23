@@ -49,3 +49,40 @@ async def user(client):
     await client.post('/users', json=payload)
 
     return payload
+
+
+@pytest.fixture
+async def comment_popule(client, user):
+    count = 0
+    total_comment = 10
+    while True:
+        payload = {
+            'comment': {'comment': 'comentário foda'},
+            'user': {
+                'email': f'{user["email"]}',
+                'password': f'{user["password"]}',
+            },
+        }
+
+        await client.post('/comments', json=payload)
+
+        count += 1
+
+        if count == total_comment:
+            break
+
+    return payload
+
+
+@pytest.fixture
+async def user_popule(client):
+    users = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+    for cont in users:
+        payload = {
+            'name': 'test_user',
+            'email': f'test{cont}@example.com',
+            'password': 'senhasupersecreta',
+        }
+
+        await client.post('/users', json=payload)

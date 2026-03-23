@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.mark.asyncio
-async def test_create_user_success(client):
+async def test_create_user_sucess(client):
     payload = {
         'name': 'test_user',
         'email': 'test@example.com',
