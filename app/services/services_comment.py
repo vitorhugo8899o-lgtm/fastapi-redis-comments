@@ -33,7 +33,7 @@ async def create_comment(user: Login, comment: CommentUser, r: r) -> dict:
 
         await pipe.rpush(
             'comments:list',
-            f'comment:{id_comment}:message:{comment.comment}:email_user:{user.email}'
+            f'comment:{id_comment}:message:{comment.comment}:email_user:{user.email}',
         )
 
         await pipe.execute()
@@ -48,14 +48,14 @@ async def get_comments(r: r, init: int, end: int):
 
     for entry in list_comment:
         if isinstance(entry, bytes):
-            entry = entry.decode('utf-8')
+            entry = entry.decode('utf-8')  #noqa PLW2901
 
         parts = entry.split(':')
 
         comment_dict = {
-            "id": parts[1],
-            "message": parts[3],
-            "email_user": parts[5]
+            'id': parts[1],
+            'message': parts[3],
+            'email_user': parts[5],
         }
 
         formatted_comments.append(comment_dict)
@@ -63,14 +63,14 @@ async def get_comments(r: r, init: int, end: int):
     return formatted_comments
 
 
-async def like_the_comment(user:Login,id_comment: int, r: r) -> str:
+async def like_the_comment(user: Login, id_comment: int, r: r) -> str:
 
     liked = await r.sismember(f'comment:{id_comment}:likes_users', user.email)
 
     if liked:
         raise HTTPException(
             status_code=HTTPStatus.CONFLICT,
-            detail='Você já curtiu esse comentário'
+            detail='Você já curtiu esse comentário',
         )
 
     async with r.pipeline(transaction=True) as pipe:
@@ -84,16 +84,16 @@ async def like_the_comment(user:Login,id_comment: int, r: r) -> str:
 
         result = await pipe.execute()
 
-
     if not result[0]:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='Comentário não encontrado'
+            detail='Comentário não encontrado',
         )
 
     return f'Comentário curtido: likes no comentário {result[2]}'
 
-async def get_all_liked(r:r,id_comment:int):
+
+async def get_all_liked(r: r, id_comment: int):
 
     likes = await r.smembers(f'comment:{id_comment}:likes_users')
 
@@ -102,7 +102,7 @@ async def get_all_liked(r:r,id_comment:int):
     if not result:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='Comentário não encontrado ou deletado.'
+            detail='Comentário não encontrado ou deletado.',
         )
 
     if result == 0:
@@ -110,14 +110,15 @@ async def get_all_liked(r:r,id_comment:int):
 
     return f'Total de curtidas: {result}. Pessoas que curtiram: {likes}'
 
-async def delete_comment_user(user:Login,r:r,id_comment:int):
 
-    comment_email = await r.hget(f'comment:{id_comment}','_email_user')
+async def delete_comment_user(user: Login, r: r, id_comment: int):
+
+    comment_email = await r.hget(f'comment:{id_comment}', '_email_user')
 
     if comment_email != user.email:
         raise HTTPException(
             status_code=HTTPStatus.FORBIDDEN,
-            detail='O email não conhecide com o do comentário'
+            detail='O email não conhecide com o do comentário',
         )
 
     async with r.pipeline(transaction=True) as pipe:
@@ -125,18 +126,17 @@ async def delete_comment_user(user:Login,r:r,id_comment:int):
         await pipe.delete(f'comment:{id_comment}:likes_users')
 
         result = await pipe.execute()
-    
+
     if not result[0]:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='Comentário não encontrado'
+            detail='Comentário não encontrado',
         )
 
     if not result[0]:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='Comentário não encontrado'
+            detail='Comentário não encontrado',
         )
 
-    
     return 'Comentário deletado.'
