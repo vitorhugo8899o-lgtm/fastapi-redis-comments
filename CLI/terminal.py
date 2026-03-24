@@ -104,6 +104,6 @@ async def cat_animation(duracao_segundos: int = 3):
     with Live(console=console, screen=False, refresh_per_second=4) as live:
         for _ in range(duracao_segundos * 4):
             for frame in FRAMES:
-                conteudo = Panel(frame, title="[bold red]Deixe uma estrela para a tentaiva do gato", border_style="rgb(70,236,246)")
+                conteudo = Panel(frame, title="[bold red]Deixe uma estrela pela a tentaiva do gato", border_style="rgb(70,236,246)")
                 live.update(conteudo)
-                await asyncio.sleep(0.25)
+                await asyncio.sleep(0.50)
