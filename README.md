@@ -1,4 +1,4 @@
-# 🚀 FastAPI Redis Comments - Social Network CLI Simulator
+#  FastAPI Redis Comments - Social Network CLI Simulator
 
 [![Python](https://img.shields.io/badge/Python-3.13%2B-blue)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.135.1-009485)](https://fastapi.tiangolo.com/)
@@ -7,13 +7,13 @@
 
 ---
 
-## 📋 Sobre o Projeto
+## Sobre o Projeto
 
 **FastAPI Redis Comments** é um simulador de rede social desenvolvido em **linha de comando (CLI)** que demonstra a integração prática do **Redis** com aplicações **Python** e **FastAPI**.
 
 O projeto permite criar usuários, publicar comentários e gerenciar interações em tempo real, com toda a velocidade e eficiência que o Redis oferece.
 
-### 🎯 Objetivo Principal
+###  Objetivo Principal
 Explorar conceitos avançados em desenvolvimento Python, incluindo:
 - Integração com Redis para armazenamento em memória
 - Desenvolvimento assíncrono com FastAPI
@@ -23,29 +23,29 @@ Explorar conceitos avançados em desenvolvimento Python, incluindo:
 
 ---
 
-## ✨ Funcionalidades Principais
+##  Funcionalidades Principais
 
-### 👥 **CRUD de Usuários**
-- ✅ Criar novos usuários
-- ✅ Listar todos os usuários ativos
-- ✅ Atualizar informações de usuários
-- ✅ Remover usuários
+###  **CRUD de Usuários**
+-  Criar novos usuários
+-  Listar todos os usuários ativos
+-  Atualizar informações de usuários
+-  Remover usuários
 
-### 💬 **Gerenciamento de Comentários**
-- ✅ Criar e publicar comentários
-- ✅ Listar todos os comentários disponíveis
-- ✅ Deletar comentários (autenticação futura)
-- ✅ Vincular comentários a usuários específicos
+###  **Gerenciamento de Comentários**
+-  Criar e publicar comentários
+-  Listar todos os comentários disponíveis
+-  Deletar comentários (autenticação futura)
+-  Vincular comentários a usuários específicos
 
-### 👍 **Interações Sociais**
-- ✅ Curtir/descurtir comentários
-- ✅ Rastrear número de curtidas por comentário
-- ✅ Visualizar estatísticas de engajamento
+###  **Interações Sociais**
+-  Curtir/descurtir comentários
+-  Rastrear número de curtidas por comentário
+-  Visualizar estatísticas de engajamento
 
-### 📊 **Listagens e Visualizações**
-- ✅ Dashboard com todos os usuários
-- ✅ Feed de comentários em tempo real
-- ✅ Estatísticas de atividade (melhorias visuais com Rich)
+###  **Listagens e Visualizações**
+-  Dashboard com todos os usuários
+-  Feed de comentários em tempo real
+-  Estatísticas de atividade (melhorias visuais com Rich)
 
 ---
 
@@ -96,9 +96,9 @@ fastapi-redis-comments/
 
 ---
 
-## 🚀 Como Executar o Projeto
+##  Como Executar o Projeto
 
-### 📋 Pré-requisitos
+###  Pré-requisitos
 
 Certifique-se de ter instalado:
 - **Python 3.13+** ([Download](https://www.python.org/downloads/))
@@ -108,15 +108,15 @@ Certifique-se de ter instalado:
 Opcionalmente:
 - **Poetry** ([Download](https://python-poetry.org/)) - Gerenciador de dependências alternativo
 
-### 📝 Passo a Passo
+### Passo a Passo
 
-#### 1️⃣ Clone o Repositório
+####  Clone o Repositório
 ```bash
 git clone https://github.com/vitorhugo8899o-lgtm/fastapi-redis-comments.git
 cd fastapi-redis-comments
 ```
 
-#### 2️⃣ Inicie o Redis com Docker
+#### Inicie o Redis com Docker
 ```bash
 docker-compose up -d
 ```
@@ -126,7 +126,7 @@ Verifique se o Redis está rodando:
 docker-compose ps
 ```
 
-#### 3️⃣ Instale as Dependências
+#### Instale as Dependências
 
 **Opção A: Com Poetry (Recomendado)**
 ```bash
@@ -139,7 +139,7 @@ poetry shell
 pip install -r requirements.txt
 ```
 
-#### 4️⃣ Execute a Aplicação
+#### Execute a Aplicação
 
 **Rodando o CLI (Simulador de Rede Social)**
 ```bash
@@ -148,7 +148,8 @@ python -m CLI.script
 
 **Rodando a API FastAPI em desenvolvimento**
 ```bash
-poetry run run
+poetry shell #ativar o ambiente virtual do poetry
+task run
 # ou
 fastapi dev app/main.py
 ```
@@ -158,19 +159,14 @@ Documentação interativa (Swagger): `http://localhost:8000/docs`
 
 ---
 
-## 🧪 Testes
+##  Testes
 
 ### Executar Todos os Testes
 ```bash
-poetry run test
+poetry shell #ativar o ambiente virtual do poetry
+task test
 # ou
 pytest -s -x --cov=app -vv
-```
-
-### Executar com Coverage
-```bash
-poetry run test
-# Relatório HTML será gerado em: htmlcov/index.html
 ```
 
 ### Executar Testes Específicos
@@ -181,33 +177,33 @@ pytest tests/test_comments.py -v
 
 ---
 
-## 🔍 Linting e Formatação
+## Linting e Formatação
 
 ### Verificar Código (Ruff)
 ```bash
-poetry run lint
+task lint #ativar o ambiente virtual do poetry
 # ou
 ruff check .
 ```
 
 ### Formatar Código Automaticamente
 ```bash
-poetry run format
+task format #ativar o ambiente virtual do poetry
 # ou
 ruff format .
 ```
 
 ---
 
-## 💡 Aprendizados e Considerações
+## Aprendizados e Considerações
 
-### 🎓 Principais Aprendizados
+### Principais Aprendizados
 - **FastAPI Lifespan**: Exploração de conceitos avançados de contexto de aplicação (apresentou desafios inicialmente)
 - **Performance do Redis**: Observou-se performance excepcional operando em memória, resultando em requisições extremamente rápidas
 - **Async/Await**: Implementação completa com suporte assíncrono nativo
 - **Validação com Pydantic**: Type hints e validação automática de dados
 
-### 🔮 Próximas Melhorias
+### Próximas Melhorias
 
 | Feature | Descrição | Prioridade |
 |---------|-----------|-----------|
@@ -219,13 +215,13 @@ ruff format .
 | **CI/CD** | Pipeline GitHub Actions | 🟡 Baixa |
 | **Documentação API** | Expandir documentação de endpoints | 🟡 Baixa |
 
-### ⚠️ Considerações Importantes
+###  Considerações Importantes
 
-> ⚠️ **Nota sobre Redis**: Embora o Redis não seja tradicionalmente utilizado como banco de dados principal, neste projeto foi utilizado especificamente para fins de aprendizagem e demonstração de integração. Para produção com persistência de dados, considere uma solução de banco de dados relacional ou noSQL apropriada.
+>  **Nota sobre Redis**: Embora o Redis não seja tradicionalmente utilizado como banco de dados principal, neste projeto foi utilizado especificamente para fins de aprendizagem e demonstração de integração. Para produção com persistência de dados, considere uma solução de banco de dados relacional ou noSQL apropriada.
 
 ---
 
-## 📚 Exemplos de Uso
+##  Exemplos de Uso
 
 ### Criar um Usuário
 ```python
@@ -241,7 +237,7 @@ POST /api/users
 POST /api/comments
 {
   "user_id": "user_123",
-  "content": "Olá, mundo! 🚀"
+  "content": "Olá, mundo! "
 }
 ```
 
@@ -263,11 +259,11 @@ GET /api/comments?limit=20&offset=0
 ## 🤝 Contribuindo
 
 Contribuições são bem-vindas! Sinta-se livre para:
-- 🐛 Abrir issues para reportar bugs
-- 💡 Sugerir novas funcionalidades
-- 🍴 Fazer um fork e criar pull requests
-- 📝 Melhorar a documentação
-- 🔐 Implementar autenticação e segurança
+-  Abrir issues para reportar bugs
+-  Sugerir novas funcionalidades
+-  Fazer um fork e criar pull requests
+-  Melhorar a documentação
+-  Implementar autenticação e segurança
 
 ### Processo de Contribuição
 1. Fork o projeto
@@ -284,15 +280,7 @@ Este projeto está sob licença **MIT**. Veja o arquivo [LICENSE](LICENSE) para 
 
 ---
 
-## 📧 Contato
-
-- **Autor**: Vítor Hugo
-- **Email**: [vitorhugo8899o@gmail.com](mailto:vitorhugo8899o@gmail.com)
-- **GitHub**: [@vitorhugo8899o-lgtm](https://github.com/vitorhugo8899o-lgtm)
-
----
-
-## 🔗 Recursos Úteis
+##  Recursos Úteis
 
 - [FastAPI Documentation](https://fastapi.tiangolo.com/)
 - [Redis Documentation](https://redis.io/documentation)
@@ -302,6 +290,4 @@ Este projeto está sob licença **MIT**. Veja o arquivo [LICENSE](LICENSE) para 
 
 ---
 
-**Desenvolvido com ❤️ em Python**
-
-⭐ Se este projeto foi útil, considere dar uma estrela!
+Se este projeto foi útil, considere dar uma estrela!
